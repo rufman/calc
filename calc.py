@@ -64,10 +64,25 @@ def scanTerm():
 	return True, x
 	
 def scanFactor():
+	global scanPosition
+	
 	ok, x = scanNumber()
 	if ok:
 		return True, x
 	
+	while True:
+		lastPosition = scanPosition
+		if scanChar('('):
+			ok, x = scanExpression()
+			if ok:
+				if scanChar(')'):
+					return True, x
+			else:
+				scanPosition = lastPosition
+				break
+		else:
+			break
+			
 	return False, 0
 
 # Return whether the character 'char' could be scanned
