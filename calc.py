@@ -17,21 +17,21 @@ def scanCommand():
 def scanExpression():
 	global scanPosition
 	
-	ok, x = scanFactor()
+	ok, x = scanTerm()
 	if not ok:
 		return False, 0
 
 	while True:
 		lastPosition = scanPosition
 		if scanChar('+'):
-			ok, y = scanFactor()
+			ok, y = scanTerm()
 			if ok:
 				x = x + y
 			else:
 				scanPosition = lastPosition
 				break
 		elif scanChar('-'):
-			ok, y = scanFactor()
+			ok, y = scanTerm()
 			if ok:
 				x = x - y
 			else:
@@ -42,6 +42,27 @@ def scanExpression():
 
 	return True, x
 
+def scanTerm():
+	global scanPosition
+	
+	ok, x = scanFactor()
+	if not ok:
+		return False, 0
+	
+	while True:
+		lastPosition = scanPosition
+		if scanChar('x'):
+			ok, y = scanFactor()
+			if ok:
+				x = x * y
+			else:
+				scanPosition = lastPosition
+				break
+		else:
+			break
+	
+	return True, x
+	
 def scanFactor():
 	ok, x = scanNumber()
 	if ok:
