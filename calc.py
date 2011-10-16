@@ -10,10 +10,35 @@
 #   Result: 4
 
 def scanCommand():
+	ok,x,var = scanAssignment()
+	if ok: 
+		print "Assignment: ", var, "=", x
 	ok, x = scanExpression()
 	if ok:
 		print "Result:", x
 
+def scanAssignment():
+	global scanPosition
+	ok, var = scanLetter()
+	if not ok:
+		return False, 0, 0
+	
+	while True:
+		lastPosition = scanPosition
+		if scanChar('='):
+			ok, x = scanExpression()
+			if ok:
+				setVariable(var, x)
+				return True, x, var
+			else:
+				scanPosition = lastPosition
+				break
+		else:
+			scanPosition -= 1
+			break
+		
+	return False, 0, 0
+	
 def scanExpression():
 	global scanPosition
 	
@@ -69,6 +94,10 @@ def scanFactor():
 	ok, x = scanNumber()
 	if ok:
 		return True, x
+	
+	ok, x = scanLetter()
+	if ok:
+		return True, getVariable(x)
 	
 	while True:
 		lastPosition = scanPosition
